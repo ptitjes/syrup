@@ -1,23 +1,169 @@
-# syrup
+# Syrup
 
-This project uses [Gradle](https://gradle.org/).
+Syrup is a lightweight plugin system for Kotlin Multiplatform.
 
-To build and run the application, use the *Gradle* tool window by clicking the Gradle icon in the right-hand toolbar,
-or run it directly from the terminal:
+Plugin objects are discovered automatically at runtime via a ServiceLoader mechanism
+(powered by [sweet-spi](https://github.com/whyoleg/sweet-spi)).
+They then participate in building a graph of dependency injection (DI) containers
+(powered by [Kodein](https://github.com/kosi-libs/Kodein)).
 
-* Run `./gradlew run` to build and run the sample application.
-* Run `./gradlew build` to only build the application.
-* Run `./gradlew check` to run all checks, including tests.
-* Run `./gradlew clean` to clean all build outputs.
+## How it works
 
-This project follows the suggested multi-module setup and consists of the subprojects:
+Syrup organizes your application as a set of plugins. Each plugin:
 
-- `syrup-runtime` - the runtime library
-- `syrup-host` - the host library
-- `sample` - a sample application that uses syrup
--
+- declares its dependencies on other plugins,
+- exposes bindings (via `api()`) that are visible to plugins that depend on it,
+- declares internal bindings (via `implementation()`) that are private to the plugin,
+- can expose set-bindings to collect contributions from its dependents.
 
-The shared build logic is located in `build-logic`.
+At startup, the `PluginManager` discovers all plugins, sorts them topologically,
+and builds a scoped DI container for each one. Bindings flow downward from
+dependencies to dependents, while set-binding contributions flow upward from
+dependents back to the plugin that declared the set.
 
-This project uses a version catalog (see `gradle/libs.versions.toml`) to declare and version dependencies
-and both a build cache and a configuration cache (see `gradle.properties`).
+### Defining a plugin
+
+A plugin implements the `Plugin` interface and is annotated with `@ServiceProvider`
+so that it can be discovered at runtime:
+
+```kotlin
+@ServiceProvider
+object MyPlugin : Plugin {
+    override val dependencies: Set<Plugin> = emptySet()
+
+    override fun DI.Builder.api() {
+        // Bindings exposed to plugins that depend on this one
+        bind<MyService> { singleton { instance<MyService>() } }
+    }
+
+    override fun DI.Builder.implementation() {
+        // Internal bindings, not visible to other plugins
+        bind<MyService> { singleton { MyServiceImpl() } }
+    }
+}
+```
+
+### Using the PluginManager
+
+Create a `PluginManager` and retrieve the DI container for a given plugin:
+
+```kotlin
+fun main() {
+    val plugins = PluginManager()
+    val di = plugins.diFor(MyPlugin)
+
+    val myService by di.instance<MyService>()
+    myService.doSomething()
+}
+```
+
+### Set-bindings
+
+Plugins can declare a set-binding in `api()` and let their dependents contribute to it:
+
+```kotlin
+@ServiceProvider
+object CorePlugin : Plugin {
+    override fun DI.Builder.api() {
+        bindSet<Extension> {}
+    }
+
+    override fun DI.Builder.implementation() {}
+}
+
+@ServiceProvider
+object FeaturePlugin : Plugin {
+    override val dependencies = setOf(CorePlugin)
+
+    override fun DI.Builder.api() {
+        inBindSet<Extension> {
+            add { singleton { MyExtension() } }
+        }
+    }
+
+    override fun DI.Builder.implementation() {}
+}
+```
+
+When you resolve `Set<Extension>` from `CorePlugin`'s DI container, it will include
+contributions from all of its dependents.
+
+## Using in your projects
+
+### Gradle plugin setup
+
+Syrup relies on [sweet-spi](https://github.com/whyoleg/sweet-spi) and
+[KSP](https://github.com/google/ksp) for service discovery.
+Add the following plugins to your module's `build.gradle.kts`:
+
+```kotlin
+import dev.whyoleg.sweetspi.gradle.withSweetSpi
+
+plugins {
+  id("com.google.devtools.ksp") version "2.3.5"
+  id("dev.whyoleg.sweetspi") versions "0.1.3"
+}
+
+kotlin {
+  withSweetSpi()
+}
+```
+
+The `withSweetSpi()` call configures KSP to generate the service provider metadata
+that Syrup uses to discover your plugins at runtime.
+
+### Dependencies
+
+Add the appropriate dependency in each module's `build.gradle.kts`:
+
+- Modules that **define plugins** only need the runtime library:
+
+  ```kotlin
+  dependencies {
+      implementation(libs.syrup.runtime)
+  }
+  ```
+
+- The **application entry point** (where you create the `PluginManager`) needs the
+  host library, which transitively includes the runtime:
+
+  ```kotlin
+  dependencies {
+      implementation(libs.syrup.host)
+  }
+  ```
+
+## Project structure
+
+This project follows a Gradle multi-module layout:
+
+- **syrup-runtime** -- the runtime library containing the `Plugin` interface and `PluginId`.
+  This is the only dependency your plugin modules need.
+- **syrup-host** -- the host library that provides `PluginManager` and wires everything together.
+  Only the application entry point needs this dependency.
+- **sample** -- a sample application demonstrating how to define and use plugins.
+
+The shared build logic lives in `build-logic`.
+
+## Build and run
+
+This project uses [Gradle](https://gradle.org/). You can use the Gradle wrapper
+included in the repository:
+
+```bash
+# Build and run the sample application
+./gradlew run
+
+# Build only
+./gradlew build
+
+# Run all checks, including tests
+./gradlew check
+
+# Clean all build outputs
+./gradlew clean
+```
+
+## License
+
+This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.

@@ -5,7 +5,7 @@ import io.github.ptitjes.syrup.Plugin
 import org.kodein.di.*
 
 @ServiceProvider
-data object TestPluginA : Plugin {
+object TestPluginA : Plugin {
     override val dependencies: Set<Plugin> = emptySet()
 
     override fun DI.Builder.api() {
@@ -23,7 +23,7 @@ data object TestPluginA : Plugin {
 }
 
 @ServiceProvider
-data object TestPluginB : Plugin {
+object TestPluginB : Plugin {
     override val dependencies: Set<Plugin> = setOf(TestPluginA)
 
     override fun DI.Builder.api() {
@@ -37,7 +37,7 @@ data object TestPluginB : Plugin {
 }
 
 @ServiceProvider
-data object TestPluginC : Plugin {
+object TestPluginC : Plugin {
     override val dependencies: Set<Plugin> = setOf(TestPluginA)
 
     override fun DI.Builder.api() {
@@ -55,7 +55,7 @@ data object TestPluginC : Plugin {
 }
 
 @ServiceProvider
-data object TestPluginD : Plugin {
+object TestPluginD : Plugin {
     override val dependencies: Set<Plugin> = setOf(TestPluginC)
 
     override fun DI.Builder.api() {
