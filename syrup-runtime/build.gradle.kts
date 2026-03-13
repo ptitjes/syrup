@@ -1,17 +1,16 @@
 plugins {
-    // Apply the shared build logic from a convention plugin.
-    // The shared code is located in `buildSrc/src/main/kotlin/kotlin-jvm.gradle.kts`.
-    id("buildsrc.convention.kotlin-jvm")
-    // Apply Kotlin Serialization plugin from `gradle/libs.versions.toml`.
-    alias(libs.plugins.kotlinPluginSerialization)
-    alias(libs.plugins.mokkery)
+    id("syrup.conventions.kotlin-multiplatform")
 }
 
-dependencies {
-    // Apply the kotlinx bundle of dependencies from the version catalog (`gradle/libs.versions.toml`).
-    implementation(libs.bundles.kotlinxEcosystem)
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.bundles.kotlinxEcosystem)
 
-    api(libs.kodein)
-
-    testImplementation(kotlin("test"))
+            api(libs.kodein)
+        }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+        }
+    }
 }
