@@ -1,5 +1,6 @@
 plugins {
     id("syrup.conventions.kotlin-multiplatform")
+    id("syrup.conventions.publishing")
     alias(libs.plugins.mokkery)
 }
 kotlin {

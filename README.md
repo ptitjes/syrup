@@ -114,13 +114,18 @@ that Syrup uses to discover your plugins at runtime.
 
 ### Dependencies
 
+> **Note:** Syrup isn't currently released to Maven Central.
+> Please use the `publishToMavenLocal` task for now to add it to your local Maven repository:
+> 
+> `./gradlew publishToMavenLocal`
+
 Add the appropriate dependency in each module's `build.gradle.kts`:
 
 - Modules that **define plugins** only need the runtime library:
 
   ```kotlin
   dependencies {
-      implementation(libs.syrup.runtime)
+      implementation("io.github.ptitjes.syrup:syrup-runtime:0.1.0")
   }
   ```
 
@@ -129,7 +134,7 @@ Add the appropriate dependency in each module's `build.gradle.kts`:
 
   ```kotlin
   dependencies {
-      implementation(libs.syrup.host)
+      implementation("io.github.ptitjes.syrup:syrup-host:0.1.0")
   }
   ```
 

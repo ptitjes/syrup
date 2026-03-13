@@ -2,6 +2,7 @@ import dev.whyoleg.sweetspi.gradle.withSweetSpi
 
 plugins {
     id("syrup.conventions.kotlin-multiplatform")
+    id("syrup.conventions.publishing")
     alias(libs.plugins.ksp)
     alias(libs.plugins.sweetSpi)
 }

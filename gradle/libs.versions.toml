@@ -8,12 +8,16 @@ kodein = "7.31.0"
 
 mokkery = "3.2.0"
 
+mavenPublish = "0.36.0"
+
 [libraries]
 kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinxCoroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 
 sweetSpiRuntime = { module = 'dev.whyoleg.sweetspi:sweetspi-runtime', version.ref = "sweetSpi" }
 kodein = { module = "org.kodein.di:kodein-di", version.ref = "kodein" }
+
+mavenPublishPlugin = { module = "com.vanniktech.maven.publish:com.vanniktech.maven.publish.gradle.plugin", version.ref = "mavenPublish" }
 
 [bundles]
 kotlinxEcosystem = ["kotlinxCoroutines"]
@@ -23,3 +27,4 @@ kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 sweetSpi = { id = "dev.whyoleg.sweetspi", version.ref = "sweetSpi" }
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
+mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
