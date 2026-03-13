@@ -1,9 +1,10 @@
 package io.github.ptitjes.syrup.sample.app
 
+import dev.whyoleg.sweetspi.ServiceProvider
 import io.github.ptitjes.syrup.Plugin
-import io.github.ptitjes.syrup.PluginId
 import org.kodein.di.*
 
+@ServiceProvider
 data object TestPluginA : Plugin {
     override val dependencies: Set<Plugin> = emptySet()
 
@@ -21,6 +22,7 @@ data object TestPluginA : Plugin {
     }
 }
 
+@ServiceProvider
 data object TestPluginB : Plugin {
     override val dependencies: Set<Plugin> = setOf(TestPluginA)
 
@@ -34,6 +36,7 @@ data object TestPluginB : Plugin {
     }
 }
 
+@ServiceProvider
 data object TestPluginC : Plugin {
     override val dependencies: Set<Plugin> = setOf(TestPluginA)
 
@@ -51,6 +54,7 @@ data object TestPluginC : Plugin {
     }
 }
 
+@ServiceProvider
 data object TestPluginD : Plugin {
     override val dependencies: Set<Plugin> = setOf(TestPluginC)
 
@@ -62,43 +66,5 @@ data object TestPluginD : Plugin {
     }
 
     override fun DI.Builder.implementation() {
-    }
-}
-
-class StandaloneService(
-    private val services: Set<Service> = emptySet(),
-) {
-    init {
-        println("StandaloneService initialized with ${services.size} services")
-    }
-
-    fun indentifyAll() {
-        services.forEach { it.indentify() }
-    }
-}
-
-interface Service {
-    fun indentify()
-}
-
-class NamedService(val name: String, val pluginId: PluginId) : Service {
-    override fun indentify() {
-        println("I am $name (pluginId=${pluginId})")
-    }
-}
-
-class OtherServiceBasedService(val otherServices: Set<OtherService>) : Service {
-    override fun indentify() {
-        otherServices.forEach { it.indentify() }
-    }
-}
-
-interface OtherService {
-    fun indentify()
-}
-
-class NamedOtherService(val name: String, val pluginId: PluginId) : OtherService {
-    override fun indentify() {
-        println("I am $name (pluginId=${pluginId})")
     }
 }

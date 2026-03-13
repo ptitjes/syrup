@@ -18,6 +18,7 @@ out/
 
 .idea/workspace.xml
 .idea/artifacts
+.idea/shelf
 
 ### Kotlin ###
 .kotlin

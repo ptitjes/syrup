@@ -1,23 +1,14 @@
-package io.github.ptitjes.host
+package io.github.ptitjes.host.internal
 
-import io.github.ptitjes.host.internal.*
+import dev.whyoleg.sweetspi.ServiceLoader
+import io.github.ptitjes.host.PluginManager
 import io.github.ptitjes.syrup.Plugin
 import org.kodein.di.DI
 
-class DefaultPluginManager private constructor(
-    private val plugins: Set<Plugin>,
+internal class DefaultPluginManager(
+    private val pluginFilter: (Plugin) -> Boolean,
     private val internalPluginBindings: (Plugin) -> DI.Module?
 ) : PluginManager {
-
-    companion object : PluginManager.Factory {
-        override fun create(
-            plugins: Set<Plugin>,
-            internalPluginBindings: (Plugin) -> DI.Module?,
-        ): PluginManager = DefaultPluginManager(
-            plugins = plugins,
-            internalPluginBindings = internalPluginBindings,
-        )
-    }
 
     override fun diFor(plugin: Plugin): DI = pluginHolderFor(plugin).di
 
@@ -26,10 +17,13 @@ class DefaultPluginManager private constructor(
         perPluginHolder[plugin] ?: error("Plugin $plugin not bootstrapped")
 
     init {
-        bootstrap()
+        load()
     }
 
-    private fun bootstrap() {
+    private fun load() {
+        val load = ServiceLoader.load<Plugin>()
+        val plugins = load.filter(pluginFilter)
+
         // TODO check for circular plugin dependencies
 
         val sortedPlugins by lazy { plugins.topologicalSort() }
@@ -113,7 +107,7 @@ class DefaultPluginManager private constructor(
     }
 }
 
-private fun Set<Plugin>.topologicalSort(): List<Plugin> {
+private fun Iterable<Plugin>.topologicalSort(): List<Plugin> {
     val sorted = mutableListOf<Plugin>()
     val visited = mutableSetOf<Plugin>()
 

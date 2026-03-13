@@ -1,7 +1,9 @@
 package io.github.ptitjes.syrup
 
+import dev.whyoleg.sweetspi.Service
 import org.kodein.di.DI
 
+@Service
 interface Plugin {
     val id: PluginId get() = PluginId(this::class.qualifiedName!!)
 
