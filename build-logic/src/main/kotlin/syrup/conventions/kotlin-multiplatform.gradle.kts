@@ -6,7 +6,7 @@ plugins {
     kotlin("multiplatform")
 }
 kotlin {
-    jvmToolchain(24)
+    jvmToolchain(21)
 
     jvm()
 }
