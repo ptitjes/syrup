@@ -1,12 +1,11 @@
 package io.github.ptitjes.host.internal
 
-import dev.whyoleg.sweetspi.ServiceLoader
 import io.github.ptitjes.host.PluginManager
 import io.github.ptitjes.syrup.Plugin
 import org.kodein.di.DI
 
 internal class DefaultPluginManager(
-    private val pluginFilter: (Plugin) -> Boolean,
+    private val plugins: Set<Plugin>,
     private val internalPluginBindings: (Plugin) -> DI.Module?
 ) : PluginManager {
 
@@ -17,19 +16,14 @@ internal class DefaultPluginManager(
         perPluginHolder[plugin] ?: error("Plugin $plugin not bootstrapped")
 
     init {
-        load()
+        buildPluginDIs()
     }
 
-    private fun load() {
-        val load = ServiceLoader.load<Plugin>()
-        val plugins = load.filter(pluginFilter)
-
-        // TODO check for circular plugin dependencies
+    internal fun buildPluginDIs() {
+        debug("Building plugin DIs")
 
         val sortedPlugins by lazy { plugins.topologicalSort() }
         val perPluginDependents = mutableMapOf<Plugin, MutableSet<Plugin>>()
-
-        debug("Bootstrapping")
 
         sortedPlugins.forEach { plugin ->
             val pluginName = plugin::class.simpleName!!

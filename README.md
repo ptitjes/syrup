@@ -43,17 +43,33 @@ object MyPlugin : Plugin {
 }
 ```
 
-### Using the PluginManager
+### Assembling plugins
 
-Create a `PluginManager` and retrieve the DI container for a given plugin:
+Use `assemblePlugins` to discover and wire all plugins, then retrieve the DI
+container for a given plugin:
 
 ```kotlin
 fun main() {
-    val plugins = PluginManager()
+    val plugins = assemblePlugins {
+        loadPlugins()
+    }
     val di = plugins.diFor(MyPlugin)
 
     val myService by di.instance<MyService>()
     myService.doSomething()
+}
+```
+
+Inside the `assemblePlugins` block you can also filter discovered plugins and
+contribute extra bindings to every plugin's DI container:
+
+```kotlin
+val plugins = assemblePlugins {
+    loadPlugins()
+    filterPlugins { it != SomeUnwantedPlugin }
+    contributePluginBindings { plugin ->
+        bindSingleton<PluginId> { plugin.id }
+    }
 }
 ```
 
@@ -129,7 +145,7 @@ Add the appropriate dependency in each module's `build.gradle.kts`:
   }
   ```
 
-- The **application entry point** (where you create the `PluginManager`) needs the
+- The **application entry point** (where you call `assemblePlugins`) needs the
   host library, which transitively includes the runtime:
 
   ```kotlin
