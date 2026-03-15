@@ -1,14 +1,15 @@
 package io.github.ptitjes.syrup
 
 import dev.whyoleg.sweetspi.Service
+import io.github.ptitjes.syrup.specification.PluginSpecificationBuilder
 import org.kodein.di.DI
 
 @Service
 interface Plugin {
-    val id: PluginId get() = PluginId(this::class.qualifiedName!!)
+    val id: PluginId get() = PluginId(this::class.simpleName!!)
 
     val dependencies: Set<Plugin> get() = emptySet()
 
-    fun DI.Builder.api()
-    fun DI.Builder.implementation()
+    fun PluginSpecificationBuilder.specification() {}
+    fun DI.Builder.implementation() {}
 }

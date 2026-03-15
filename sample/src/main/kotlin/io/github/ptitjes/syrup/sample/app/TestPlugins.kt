@@ -2,18 +2,28 @@ package io.github.ptitjes.syrup.sample.app
 
 import dev.whyoleg.sweetspi.ServiceProvider
 import io.github.ptitjes.syrup.Plugin
+import io.github.ptitjes.syrup.specification.ExtensionPoint
+import io.github.ptitjes.syrup.specification.PluginSpecificationBuilder
 import org.kodein.di.*
+import org.kodein.type.generic
+
+object ExtensionPoints {
+    object Services : ExtensionPoint.Plural<Service>(generic())
+    object OtherServices : ExtensionPoint.Plural<OtherService>(generic())
+}
 
 @ServiceProvider
 object TestPluginA : Plugin {
     override val dependencies: Set<Plugin> = emptySet()
 
-    override fun DI.Builder.api() {
-        bind<StandaloneService> { singleton { instance<StandaloneService>() } }
+    override fun PluginSpecificationBuilder.specification() {
+        exposedType<StandaloneService> { instance() }
 
-        bindSet<Service> {
-            add { singleton { new(::NamedService, "A1") } }
-            add { singleton { new(::NamedService, "A2") } }
+        extensionPoint(ExtensionPoints.Services)
+
+        ExtensionPoints.Services {
+            contribution { new(::NamedService, "A1") }
+            contribution { new(::NamedService, "A2") }
         }
     }
 
@@ -26,13 +36,10 @@ object TestPluginA : Plugin {
 object TestPluginB : Plugin {
     override val dependencies: Set<Plugin> = setOf(TestPluginA)
 
-    override fun DI.Builder.api() {
-        inBindSet<Service> {
-            add { singleton { new(::NamedService, "B") } }
+    override fun PluginSpecificationBuilder.specification() {
+        ExtensionPoints.Services {
+            contribution { new(::NamedService, "B") }
         }
-    }
-
-    override fun DI.Builder.implementation() {
     }
 }
 
@@ -40,17 +47,16 @@ object TestPluginB : Plugin {
 object TestPluginC : Plugin {
     override val dependencies: Set<Plugin> = setOf(TestPluginA)
 
-    override fun DI.Builder.api() {
-        inBindSet<Service> {
-            add { singleton { new(::OtherServiceBasedService) } }
+    override fun PluginSpecificationBuilder.specification() {
+        ExtensionPoints.Services {
+            contribution { new(::OtherServiceBasedService) }
         }
 
-        bindSet<OtherService> {
-            add { singleton { new(::NamedOtherService, "C1") } }
-        }
-    }
+        extensionPoint(ExtensionPoints.OtherServices)
 
-    override fun DI.Builder.implementation() {
+        ExtensionPoints.OtherServices {
+            contribution { new(::NamedOtherService, "C1") }
+        }
     }
 }
 
@@ -58,13 +64,10 @@ object TestPluginC : Plugin {
 object TestPluginD : Plugin {
     override val dependencies: Set<Plugin> = setOf(TestPluginC)
 
-    override fun DI.Builder.api() {
-        inBindSet<OtherService> {
-            add { singleton { new(::NamedOtherService, "D1") } }
-            add { singleton { new(::NamedOtherService, "D2") } }
+    override fun PluginSpecificationBuilder.specification() {
+        ExtensionPoints.OtherServices {
+            contribution { new(::NamedOtherService, "D1") }
+            contribution { new(::NamedOtherService, "D2") }
         }
-    }
-
-    override fun DI.Builder.implementation() {
     }
 }

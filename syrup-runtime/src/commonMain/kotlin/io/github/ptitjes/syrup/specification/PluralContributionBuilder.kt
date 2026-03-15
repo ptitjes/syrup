@@ -1,8 +1,6 @@
 package io.github.ptitjes.syrup.specification
 
 import org.kodein.di.bindings.NoArgBindingDI
-import org.kodein.type.TypeToken
-import org.kodein.type.generic
 
 /**
  * DSL builder for contributing to a [ExtensionPoint.Plural] extension point.
@@ -21,9 +19,9 @@ class PluralContributionBuilder<T : Any> @PublishedApi internal constructor(
     @Suppress("UNCHECKED_CAST")
     @JvmName("contributionGeneric")
     inline fun <reified S : T> contribution() {
-        contributions += PluginSpecification.ExtensionContributionDeclaration<T>(
+        contributions += PluginSpecification.ExtensionContributionDeclaration(
             point = point,
-            type = generic<S>() as TypeToken<out T>,
+            type = point.type,
             creator = null
         )
     }
@@ -35,9 +33,9 @@ class PluralContributionBuilder<T : Any> @PublishedApi internal constructor(
      */
     @Suppress("UNCHECKED_CAST")
     fun contribution() {
-        contributions += PluginSpecification.ExtensionContributionDeclaration<T>(
+        contributions += PluginSpecification.ExtensionContributionDeclaration(
             point = point,
-            type = point.type as TypeToken<out T>,
+            type = point.type,
             creator = null
         )
     }
@@ -52,7 +50,7 @@ class PluralContributionBuilder<T : Any> @PublishedApi internal constructor(
     ) {
         contributions += PluginSpecification.ExtensionContributionDeclaration(
             point = point,
-            type = null,
+            type = point.type,
             creator = creator
         )
     }

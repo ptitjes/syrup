@@ -45,7 +45,7 @@ class PluginSpecification private constructor(
      * @property type The Kodein [TypeToken] for the type.
      * @property creator An optional creator function to bind the type in the DI container.
      */
-    class ExposedTypeDeclaration<T : Any>(
+    class ExposedTypeDeclaration<T : Any> @PublishedApi internal constructor(
         val type: TypeToken<T>,
         val creator: (NoArgBindingDI<Any>.() -> T)?,
     ) {
@@ -59,7 +59,7 @@ class PluginSpecification private constructor(
      * @property point The [ExtensionPoint] instance.
      * @property optional Whether the extension point is optional.
      */
-    class ExtensionPointDeclaration<T : Any>(
+    class ExtensionPointDeclaration<T : Any> @PublishedApi internal constructor(
         val point: ExtensionPoint,
         val optional: Boolean,
     ) {
@@ -74,7 +74,7 @@ class PluginSpecification private constructor(
      * @property type The Kodein [TypeToken] for the contribution type (if auto-constructed).
      * @property creator An optional creator function for the contribution.
      */
-    class ExtensionContributionDeclaration<T : Any>(
+    class ExtensionContributionDeclaration<T : Any> @PublishedApi internal constructor(
         val point: ExtensionPoint,
         val type: TypeToken<out T>?,
         val creator: (NoArgBindingDI<Any>.() -> T)?,

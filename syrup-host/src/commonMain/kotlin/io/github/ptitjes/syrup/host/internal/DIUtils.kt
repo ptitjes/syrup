@@ -1,4 +1,4 @@
-package io.github.ptitjes.host.internal
+package io.github.ptitjes.syrup.host.internal
 
 import org.kodein.di.*
 import org.kodein.di.bindings.BindingDI
@@ -14,23 +14,19 @@ private fun TypeToken<out Any>.isSetType(): Boolean = SET_STAR.isAssignableFrom(
 
 @Suppress("UNCHECKED_CAST")
 internal fun <C : Any, A, T : Any> DI.retrieveFactories(
-    debugName: String,
     key: DI.Key<C, A, T>,
     callbackDi: DI,
     overrideLevel: Int = 0,
-): List<(A) -> T> = debug(debugName, "retrieveFactories") {
-    debug("Collecting factories for $key")
+): List<(A) -> T> {
     val result = container.tree.find(key, overrideLevel, all = true)
-    val allFactories = result.map { (_, definition, translator) ->
+    val allFactories = result.map { (key, definition, translator) ->
         val currentContext = diContext as C
         val originalContext = DIContext.Companion(key.contextType, currentContext) as DIContext<Any>
         val kContext = translator?.toKContext(callbackDi.direct, currentContext) ?: originalContext
-        key as DI.Key<Any, A, T>
         val bindingDI = BindingDIImpl(callbackDi.direct.on(kContext.value), key, overrideLevel)
         definition.binding.getFactory(key, bindingDI)
     }
-    debug("Collected ${allFactories.size} factories for $key")
-    return@debug allFactories
+    return allFactories
 }
 
 internal fun <A, C : Any, T : Any> DI.allFactories(key: DI.Key<C, A, T>): List<(A) -> T> =

@@ -5,8 +5,8 @@ import org.kodein.type.TypeToken
 /**
  * Represents an extension point that can be contributed to by other plugins.
  *
- * Extension points are defined by a plugin to allow other plugins to provide
- * additional functionality. There are two types of extension points:
+ * A plugin defines extension points to allow other plugins to provide additional functionality.
+ * There are two types of extension points:
  * - [Singular]: Exactly one contribution is expected (or optional).
  * - [Plural]: A set of contributions is expected (or optional).
  */
@@ -16,12 +16,16 @@ abstract class ExtensionPoint private constructor() {
      *
      * @param T The type of the contribution.
      */
-    open class Singular<T : Any>(val type: TypeToken<T>) : ExtensionPoint()
+    open class Singular<T : Any>(val type: TypeToken<out T>) : ExtensionPoint() {
+        override fun toString(): String = "ExtensionPoint.Singular(type=$type)"
+    }
 
     /**
      * An extension point that expects multiple contributions.
      *
      * @param T The type of the contributions.
      */
-    open class Plural<T : Any>(val type: TypeToken<T>) : ExtensionPoint()
+    open class Plural<T : Any>(val type: TypeToken<out T>) : ExtensionPoint() {
+        override fun toString(): String = "ExtensionPoint.Plural(type=$type)"
+    }
 }

@@ -1,15 +1,15 @@
 package io.github.ptitjes.syrup.sample.app
 
+import io.github.ptitjes.syrup.PluginContext
 import io.github.ptitjes.syrup.PluginId
 
 class StandaloneService(
-    private val services: Set<Service> = emptySet(),
+    context: PluginContext,
 ) {
-    init {
-        println("StandaloneService initialized with ${services.size} services")
-    }
+    private val services by context.contributions(ExtensionPoints.Services)
 
     fun indentifyAll() {
+        println("StandaloneService initialized with ${services.size} services")
         services.forEach { it.indentify() }
     }
 }
@@ -24,7 +24,9 @@ class NamedService(val name: String, val pluginId: PluginId) : Service {
     }
 }
 
-class OtherServiceBasedService(val otherServices: Set<OtherService>) : Service {
+class OtherServiceBasedService(pluginContext: PluginContext) : Service {
+    val otherServices by pluginContext.contributions(ExtensionPoints.OtherServices)
+
     override fun indentify() {
         otherServices.forEach { it.indentify() }
     }

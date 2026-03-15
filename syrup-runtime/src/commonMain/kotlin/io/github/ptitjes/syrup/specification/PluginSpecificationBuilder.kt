@@ -16,8 +16,6 @@ class PluginSpecificationBuilder {
     @PublishedApi
     internal val extensionContributions = mutableListOf<PluginSpecification.ExtensionContributionDeclaration<*>>()
 
-    // ── Exposed types ──
-
     /**
      * Exposes a type [T] from this plugin.
      *
@@ -32,13 +30,9 @@ class PluginSpecificationBuilder {
      *
      * @param creator The function to create the instance of [T].
      */
-    inline fun <reified T : Any> exposedType(
-        noinline creator: NoArgBindingDI<Any>.() -> T,
-    ) {
+    inline fun <reified T : Any> exposedType(noinline creator: NoArgBindingDI<Any>.() -> T) {
         exposedTypes += PluginSpecification.ExposedTypeDeclaration(type = generic<T>(), creator = creator)
     }
-
-    // ── Extension-point ownership ──
 
     /**
      * Declares that this plugin owns a singular extension point.
@@ -46,10 +40,7 @@ class PluginSpecificationBuilder {
      * @param point The [ExtensionPoint.Singular] instance.
      * @param optional Whether the contribution is optional.
      */
-    fun <T : Any> extensionPoint(
-        point: ExtensionPoint.Singular<T>,
-        optional: Boolean = false,
-    ) {
+    fun <T : Any> extensionPoint(point: ExtensionPoint.Singular<T>, optional: Boolean = false) {
         extensionPoints += PluginSpecification.ExtensionPointDeclaration<T>(point = point, optional = optional)
     }
 
@@ -59,36 +50,27 @@ class PluginSpecificationBuilder {
      * @param point The [ExtensionPoint.Plural] instance.
      * @param optional Whether the contributions are optional (resulting in an empty set).
      */
-    fun <T : Any> extensionPoint(
-        point: ExtensionPoint.Plural<T>,
-        optional: Boolean = false,
-    ) {
+    fun <T : Any> extensionPoint(point: ExtensionPoint.Plural<T>, optional: Boolean = false) {
         extensionPoints += PluginSpecification.ExtensionPointDeclaration<T>(point = point, optional = optional)
     }
 
-    // ── Contributions (operator invoke on the extension-point object) ──
-
     /**
-     * Contributes to a [Singular] extension point.
+     * Contributes to a [ExtensionPoint.Singular] extension point.
      *
      * @param block The builder block for the contribution.
      */
-    operator fun <T : Any> ExtensionPoint.Singular<T>.invoke(
-        block: SingularContributionBuilder<T>.() -> Unit,
-    ) {
+    operator fun <T : Any> ExtensionPoint.Singular<T>.invoke(block: SingularContributionBuilder<T>.() -> Unit) {
         val builder = SingularContributionBuilder<T>(this)
         builder.block()
         extensionContributions += builder.contributions
     }
 
     /**
-     * Contributes to a [Plural] extension point.
+     * Contributes to a [ExtensionPoint.Plural] extension point.
      *
      * @param block The builder block for the contributions.
      */
-    operator fun <T : Any> ExtensionPoint.Plural<T>.invoke(
-        block: PluralContributionBuilder<T>.() -> Unit,
-    ) {
+    operator fun <T : Any> ExtensionPoint.Plural<T>.invoke(block: PluralContributionBuilder<T>.() -> Unit) {
         val builder = PluralContributionBuilder<T>(this)
         builder.block()
         extensionContributions += builder.contributions
