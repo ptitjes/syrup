@@ -37,7 +37,7 @@ private class ModularSource(
     private val bindingSource by lazy { bindingSourceProvider?.invoke() }
 
     override fun getFactory(di: BindingDI<*>, key: DI.Key<*, *, *>): ((Any?) -> Any)? {
-        logger.debug { "$debugName > Looking for key: $key" }
+        logger.trace { "$debugName > Looking for key: $key" }
 
         @Suppress("UNCHECKED_CAST")
         val factoriesFromDI = (sourceDi ?: di.di).retrieveFactories(
@@ -45,7 +45,7 @@ private class ModularSource(
             callbackDi = callbackDi ?: di.di,
         ) as List<(Any?) -> Any>
 
-        logger.debug { "$debugName > Found ${factoriesFromDI.size} factories from DI" }
+        logger.trace { "$debugName > Found ${factoriesFromDI.size} factories from DI" }
 
         @Suppress("UNCHECKED_CAST")
         val factoriesFromProvider =

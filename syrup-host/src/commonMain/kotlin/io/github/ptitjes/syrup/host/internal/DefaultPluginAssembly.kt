@@ -13,7 +13,7 @@ internal class DefaultPluginAssembly(
         private set
 
     override fun loadPlugins() {
-        logger.debug { "Loading plugins" }
+        logger.info { "Loading plugins" }
         plugins = ServiceLoader.load<Plugin>().toSet()
     }
 

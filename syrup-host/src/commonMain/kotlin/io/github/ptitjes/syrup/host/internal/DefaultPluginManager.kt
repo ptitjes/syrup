@@ -48,7 +48,7 @@ internal class DefaultPluginManager(
         val scaffolds = mutableMapOf<Plugin, PluginScaffold>()
 
         sortedPlugins.forEach { plugin ->
-            logger.info { "Building DI for plugin ${plugin.id}" }
+            logger.debug { "Building DI for plugin ${plugin.id}" }
             plugin.dependencies.forEach { dependency ->
                 perPluginDependents.getOrPut(dependency) { mutableSetOf() }.add(plugin)
             }
@@ -76,7 +76,7 @@ internal class DefaultPluginManager(
     }
 
     private fun buildMainDi(): DI {
-        logger.debug { "Building main DI" }
+        logger.info { "Building main DI" }
 
         return ModularDI(
             debugName = "main",
