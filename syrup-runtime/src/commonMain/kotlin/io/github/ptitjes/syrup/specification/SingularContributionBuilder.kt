@@ -5,6 +5,7 @@ import org.kodein.di.bindings.NoArgBindingDI
 /**
  * DSL builder for contributing to a [ExtensionPoint.Singular] extension point.
  */
+@PluginSpecificationDsl
 class SingularContributionBuilder<T : Any> @PublishedApi internal constructor(
     @PublishedApi internal val point: ExtensionPoint.Singular<T>,
 ) {

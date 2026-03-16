@@ -5,6 +5,7 @@ import org.kodein.di.bindings.NoArgBindingDI
 /**
  * DSL builder for contributing to a [ExtensionPoint.Plural] extension point.
  */
+@PluginSpecificationDsl
 class PluralContributionBuilder<T : Any> @PublishedApi internal constructor(
     @PublishedApi internal val point: ExtensionPoint.Plural<T>,
 ) {

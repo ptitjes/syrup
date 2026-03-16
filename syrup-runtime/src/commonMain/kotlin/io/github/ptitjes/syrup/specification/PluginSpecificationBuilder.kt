@@ -6,6 +6,7 @@ import org.kodein.type.generic
 /**
  * DSL builder for creating a [PluginSpecification].
  */
+@PluginSpecificationDsl
 class PluginSpecificationBuilder {
     @PublishedApi
     internal val exposedTypes = mutableListOf<PluginSpecification.ExposedTypeDeclaration<*>>()
