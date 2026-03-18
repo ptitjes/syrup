@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlinJvm) apply false
+    alias(libs.plugins.kotlinMultiplatform) apply false
 }
 
 val group = project.property("group") as String

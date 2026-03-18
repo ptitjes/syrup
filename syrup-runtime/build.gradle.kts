@@ -10,6 +10,8 @@ plugins {
 kotlin {
     withSweetSpi()
 
+    jvm()
+
     sourceSets {
         commonMain.dependencies {
             implementation(libs.bundles.kotlinxEcosystem)

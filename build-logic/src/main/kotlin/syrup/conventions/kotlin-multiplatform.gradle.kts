@@ -5,10 +5,9 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 plugins {
     kotlin("multiplatform")
 }
+
 kotlin {
     jvmToolchain(21)
-
-    jvm()
 }
 
 tasks.withType<Test>().configureEach {
