@@ -1,5 +1,7 @@
 # Syrup
 
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.ptitjes/syrup-host)](https://mvnrepository.com/artifact/io.github.ptitjes)
+
 Syrup is a lightweight plugin system for Kotlin Multiplatform.
 
 Plugin objects are discovered automatically at runtime via a ServiceLoader mechanism
@@ -216,7 +218,7 @@ Add the appropriate dependency in each module's `build.gradle.kts`:
 
   ```kotlin
   dependencies {
-      implementation("io.github.ptitjes.syrup:syrup-runtime:0.1.0")
+      implementation("io.github.ptitjes:syrup-runtime:0.1.0")
   }
   ```
 
@@ -225,7 +227,7 @@ Add the appropriate dependency in each module's `build.gradle.kts`:
 
   ```kotlin
   dependencies {
-      implementation("io.github.ptitjes.syrup:syrup-host:0.1.0")
+      implementation("io.github.ptitjes:syrup-host:0.1.0")
   }
   ```
 
