@@ -2,18 +2,21 @@ package io.github.ptitjes.syrup.host.internal
 
 import io.github.ptitjes.syrup.Plugin
 import io.github.ptitjes.syrup.PluginId
-import io.github.ptitjes.syrup.host.PluginManager
+import io.github.ptitjes.syrup.host.Logger
 import io.github.ptitjes.syrup.specification.PluginSpecificationBuilder
 import org.kodein.di.DI
 import kotlin.reflect.KProperty
 
 internal open class AbstractPluginManagerTests {
+    protected open val logLevel get() = Logger.Level.None
+
     protected fun runPluginManagerTest(
         plugins: Set<Plugin> = emptySet(),
         internalPluginBindings: DI.Builder.(Plugin) -> Unit = {},
         testBloc: DefaultPluginManager.() -> Unit = {},
     ) {
-        val manager = DefaultPluginManager(plugins, internalPluginBindings)
+        val logger = Logger.consoleLogger(logLevel)
+        val manager = DefaultPluginManager(plugins, internalPluginBindings, logger)
         manager.testBloc()
     }
 

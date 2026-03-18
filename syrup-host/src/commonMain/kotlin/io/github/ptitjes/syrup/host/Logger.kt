@@ -9,11 +9,12 @@ interface Logger {
     fun error(throwable: Throwable, messageBuilder: () -> String)
 
     enum class Level(internal val level: Int) {
-        Error(0),
-        Warn(1),
-        Info(2),
-        Debug(3),
-        Trace(4),
+        None(0),
+        Error(1),
+        Warn(2),
+        Info(3),
+        Debug(4),
+        Trace(5),
     }
 
     companion object {
