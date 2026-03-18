@@ -239,7 +239,7 @@ internal class DefaultPluginManagerTests : AbstractPluginManagerTests() {
     // region Plural contributions
 
     @Test
-    fun `contributions are visible from the plugin's context`() {
+    fun `plural contributions are visible from the plugin's context`() {
         val myExtensionPoint = ExtensionPoint.Plural<SomeService>(generic())
 
         val pluginA by testPlugin(
@@ -262,7 +262,55 @@ internal class DefaultPluginManagerTests : AbstractPluginManagerTests() {
     }
 
     @Test
-    fun `contributions are not visible from the plugin's internal DI`() {
+    fun `plural contributions are aggregated from all of the plugin's dependents`() {
+        val myExtensionPoint = ExtensionPoint.Plural<SomeService>(generic())
+
+        val pluginA by testPlugin(
+            specification = {
+                extensionPoint(myExtensionPoint)
+
+                myExtensionPoint {
+                    contribution { SomeServiceFoo("from-pluginA") }
+                }
+            }
+        )
+
+        val pluginB by testPlugin(
+            dependencies = setOf(pluginA),
+            specification = {
+                myExtensionPoint {
+                    contribution { SomeServiceFoo("from-pluginB") }
+                }
+            }
+        )
+
+        val pluginC by testPlugin(
+            dependencies = setOf(pluginA),
+            specification = {
+                myExtensionPoint {
+                    contribution { SomeServiceFoo("from-pluginC") }
+                }
+            }
+        )
+
+        runPluginManagerTest(
+            plugins = setOf(pluginA, pluginB, pluginC),
+        ) {
+            val pluginContext = internalDiFor(pluginA).direct.instance<PluginContext>()
+            val services by pluginContext.contributions(myExtensionPoint)
+            assertEquals(
+                setOf(
+                    SomeServiceFoo("from-pluginA"),
+                    SomeServiceFoo("from-pluginB"),
+                    SomeServiceFoo("from-pluginC"),
+                ),
+                services,
+            )
+        }
+    }
+
+    @Test
+    fun `plural contributions are not visible from the plugin's internal DI`() {
         val myExtensionPoint = ExtensionPoint.Plural<SomeService>(generic())
 
         val pluginA by testPlugin(
@@ -284,7 +332,7 @@ internal class DefaultPluginManagerTests : AbstractPluginManagerTests() {
     }
 
     @Test
-    fun `contributions are not visible from the main DI`() {
+    fun `plural contributions are not visible from the main DI`() {
         val myExtensionPoint = ExtensionPoint.Plural<SomeService>(generic())
 
         val pluginA by testPlugin(
