@@ -1,11 +1,9 @@
+import com.gradleup.librarian.gradle.Librarian
+
 plugins {
     alias(libs.plugins.kotlinJvm) apply false
+    alias(libs.plugins.kotlinMultiplatform) apply false
+    alias(libs.plugins.librarian) apply false
 }
 
-val group = project.property("group") as String
-val version = project.property("version") as String
-
-subprojects.forEach {
-    it.group = group
-    it.version = version
-}
+Librarian.root(project)

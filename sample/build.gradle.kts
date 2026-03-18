@@ -1,20 +1,26 @@
 import dev.whyoleg.sweetspi.gradle.withSweetSpi
 
 plugins {
-    id("syrup.conventions.kotlin-jvm")
+    id("syrup.conventions.kotlin-multiplatform")
     alias(libs.plugins.ksp)
     alias(libs.plugins.sweetSpi)
-    application
 }
 
 kotlin {
     withSweetSpi()
-}
 
-dependencies {
-    implementation(project(":syrup-host"))
-}
+    jvm {
+        @Suppress("OPT_IN_USAGE")
+        binaries {
+            executable {
+                mainClass = "io.github.ptitjes.syrup.sample.app.MainKt"
+            }
+        }
+    }
 
-application {
-    mainClass = "io.github.ptitjes.syrup.sample.app.MainKt"
+    sourceSets {
+        commonMain.dependencies {
+            implementation(project(":syrup-host"))
+        }
+    }
 }
