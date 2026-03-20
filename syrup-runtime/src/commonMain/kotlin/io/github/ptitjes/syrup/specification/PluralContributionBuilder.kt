@@ -8,6 +8,9 @@ import org.kodein.di.bindings.NoArgBindingDI
  */
 @PluginSpecificationDsl
 public class PluralContributionBuilder<T : Any> @PublishedApi internal constructor(
+    /**
+     * The extension point being contributed to.
+     */
     @PublishedApi internal val point: ExtensionPoint.Plural<T>,
 ) {
     @PublishedApi

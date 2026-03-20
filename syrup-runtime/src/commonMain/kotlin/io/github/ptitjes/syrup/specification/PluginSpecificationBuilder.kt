@@ -21,7 +21,7 @@ public class PluginSpecificationBuilder {
     /**
      * Exposes a type [T] from this plugin.
      *
-     * The type must be bound elsewhere in the plugin's implementation.
+     * The type must be bound in the plugin's [implementation][io.github.ptitjes.syrup.Plugin.implementation].
      */
     public inline fun <reified T : Any> exposedType() {
         exposedTypes += ExposedTypeDeclaration(type = generic<T>(), creator = null)

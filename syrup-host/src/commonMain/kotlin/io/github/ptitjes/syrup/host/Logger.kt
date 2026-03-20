@@ -1,13 +1,43 @@
 package io.github.ptitjes.syrup.host
 
+/**
+ * A logger interface for plugin assembly and management.
+ * Allows tracing the contribution resolution process.
+ */
 public interface Logger {
+    /**
+     * Logs a message at the TRACE level.
+     */
     public fun trace(messageBuilder: () -> String)
+
+    /**
+     * Logs a message at the DEBUG level.
+     */
     public fun debug(messageBuilder: () -> String)
+
+    /**
+     * Logs a message at the INFO level.
+     */
     public fun info(messageBuilder: () -> String)
+
+    /**
+     * Logs a message at the WARN level.
+     */
     public fun warn(messageBuilder: () -> String)
+
+    /**
+     * Logs a message at the ERROR level.
+     */
     public fun error(messageBuilder: () -> String)
+
+    /**
+     * Logs a message and an exception at the ERROR level.
+     */
     public fun error(throwable: Throwable, messageBuilder: () -> String)
 
+    /**
+     * Logging levels.
+     */
     public enum class Level(internal val level: Int) {
         None(0),
         Error(1),
@@ -18,6 +48,12 @@ public interface Logger {
     }
 
     public companion object {
+        /**
+         * Creates a logger that prints to the console.
+         *
+         * @param minimumLevel The minimum level of messages to log.
+         * @param tag The tag to use for log messages.
+         */
         public fun consoleLogger(
             minimumLevel: Level = Level.Info,
             tag: String = "Syrup",

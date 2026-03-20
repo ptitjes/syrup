@@ -8,6 +8,9 @@ import org.kodein.di.bindings.NoArgBindingDI
  */
 @PluginSpecificationDsl
 public class SingularContributionBuilder<T : Any> @PublishedApi internal constructor(
+    /**
+     * The extension point being contributed to.
+     */
     @PublishedApi internal val point: ExtensionPoint.Singular<T>,
 ) {
     @PublishedApi

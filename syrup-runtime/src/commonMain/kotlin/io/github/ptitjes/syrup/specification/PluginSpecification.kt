@@ -10,8 +10,19 @@ import org.kodein.type.TypeToken
  * using the DSL.
  */
 public class PluginSpecification private constructor(
+    /**
+     * The list of types exposed by the plugin.
+     */
     public val exposedTypes: List<ExposedTypeDeclaration<*>>,
+
+    /**
+     * The list of extension points owned by the plugin.
+     */
     public val extensionPoints: List<ExtensionPointDeclaration<*>>,
+
+    /**
+     * The list of contributions to extension points.
+     */
     public val extensionContributions: List<ExtensionContributionDeclaration<*>>,
 ) {
     public companion object {

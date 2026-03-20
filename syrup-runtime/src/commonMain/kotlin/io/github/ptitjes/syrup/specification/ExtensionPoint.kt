@@ -11,6 +11,9 @@ import org.kodein.type.TypeToken
  * - [Plural]: A set of contributions is expected (or optional).
  */
 public abstract class ExtensionPoint<T : Any> private constructor() {
+    /**
+     * The Kodein [TypeToken] for the contribution type.
+     */
     public abstract val type: TypeToken<T>
 
     /**

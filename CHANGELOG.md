@@ -8,6 +8,7 @@
 
 - Support retrieving sourced contributions (the contribution along with the source plugin)
 - Use explicitApi mode and enable ABI validation
+- Add documentation comments for core APIs
 
 # version 0.1.0
 _2026-03-18_
