@@ -1,4 +1,5 @@
 import dev.whyoleg.sweetspi.gradle.withSweetSpi
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
     id("syrup.conventions.kotlin-multiplatform")
@@ -9,6 +10,13 @@ plugins {
 
 kotlin {
     withSweetSpi()
+
+    explicitApi()
+
+    @OptIn(ExperimentalAbiValidation::class)
+    abiValidation {
+        enabled = true
+    }
 
     jvm()
 

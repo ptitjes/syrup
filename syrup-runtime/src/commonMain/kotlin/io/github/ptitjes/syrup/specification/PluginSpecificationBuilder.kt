@@ -1,5 +1,6 @@
 package io.github.ptitjes.syrup.specification
 
+import io.github.ptitjes.syrup.specification.PluginSpecification.*
 import org.kodein.di.bindings.NoArgBindingDI
 import org.kodein.type.generic
 
@@ -7,23 +8,23 @@ import org.kodein.type.generic
  * DSL builder for creating a [PluginSpecification].
  */
 @PluginSpecificationDsl
-class PluginSpecificationBuilder {
+public class PluginSpecificationBuilder {
     @PublishedApi
-    internal val exposedTypes = mutableListOf<PluginSpecification.ExposedTypeDeclaration<*>>()
+    internal val exposedTypes: MutableList<ExposedTypeDeclaration<*>> = mutableListOf()
 
     @PublishedApi
-    internal val extensionPoints = mutableListOf<PluginSpecification.ExtensionPointDeclaration<*>>()
+    internal val extensionPoints: MutableList<ExtensionPointDeclaration<*>> = mutableListOf()
 
     @PublishedApi
-    internal val extensionContributions = mutableListOf<PluginSpecification.ExtensionContributionDeclaration<*>>()
+    internal val extensionContributions: MutableList<ExtensionContributionDeclaration<*>> = mutableListOf()
 
     /**
      * Exposes a type [T] from this plugin.
      *
      * The type must be bound elsewhere in the plugin's implementation.
      */
-    inline fun <reified T : Any> exposedType() {
-        exposedTypes += PluginSpecification.ExposedTypeDeclaration(type = generic<T>(), creator = null)
+    public inline fun <reified T : Any> exposedType() {
+        exposedTypes += ExposedTypeDeclaration(type = generic<T>(), creator = null)
     }
 
     /**
@@ -31,8 +32,8 @@ class PluginSpecificationBuilder {
      *
      * @param creator The function to create the instance of [T].
      */
-    inline fun <reified T : Any> exposedType(noinline creator: NoArgBindingDI<Any>.() -> T) {
-        exposedTypes += PluginSpecification.ExposedTypeDeclaration(type = generic<T>(), creator = creator)
+    public inline fun <reified T : Any> exposedType(noinline creator: NoArgBindingDI<Any>.() -> T) {
+        exposedTypes += ExposedTypeDeclaration(type = generic<T>(), creator = creator)
     }
 
     /**
@@ -41,8 +42,8 @@ class PluginSpecificationBuilder {
      * @param point The [ExtensionPoint.Singular] instance.
      * @param optional Whether the contribution is optional.
      */
-    fun <T : Any> extensionPoint(point: ExtensionPoint.Singular<T>, optional: Boolean = false) {
-        extensionPoints += PluginSpecification.ExtensionPointDeclaration<T>(point = point, optional = optional)
+    public fun <T : Any> extensionPoint(point: ExtensionPoint.Singular<T>, optional: Boolean = false) {
+        extensionPoints += ExtensionPointDeclaration(point = point, optional = optional)
     }
 
     /**
@@ -51,8 +52,8 @@ class PluginSpecificationBuilder {
      * @param point The [ExtensionPoint.Plural] instance.
      * @param optional Whether the contributions are optional (resulting in an empty set).
      */
-    fun <T : Any> extensionPoint(point: ExtensionPoint.Plural<T>, optional: Boolean = false) {
-        extensionPoints += PluginSpecification.ExtensionPointDeclaration<T>(point = point, optional = optional)
+    public fun <T : Any> extensionPoint(point: ExtensionPoint.Plural<T>, optional: Boolean = false) {
+        extensionPoints += ExtensionPointDeclaration(point = point, optional = optional)
     }
 
     /**
@@ -60,7 +61,7 @@ class PluginSpecificationBuilder {
      *
      * @param block The builder block for the contribution.
      */
-    operator fun <T : Any> ExtensionPoint.Singular<T>.invoke(block: SingularContributionBuilder<T>.() -> Unit) {
+    public operator fun <T : Any> ExtensionPoint.Singular<T>.invoke(block: SingularContributionBuilder<T>.() -> Unit) {
         val builder = SingularContributionBuilder<T>(this)
         builder.block()
         extensionContributions += builder.contributions
@@ -71,7 +72,7 @@ class PluginSpecificationBuilder {
      *
      * @param block The builder block for the contributions.
      */
-    operator fun <T : Any> ExtensionPoint.Plural<T>.invoke(block: PluralContributionBuilder<T>.() -> Unit) {
+    public operator fun <T : Any> ExtensionPoint.Plural<T>.invoke(block: PluralContributionBuilder<T>.() -> Unit) {
         val builder = PluralContributionBuilder<T>(this)
         builder.block()
         extensionContributions += builder.contributions

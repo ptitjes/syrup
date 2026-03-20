@@ -1,16 +1,17 @@
 package io.github.ptitjes.syrup.specification
 
+import io.github.ptitjes.syrup.specification.PluginSpecification.ExtensionContributionDeclaration
 import org.kodein.di.bindings.NoArgBindingDI
 
 /**
  * DSL builder for contributing to a [ExtensionPoint.Plural] extension point.
  */
 @PluginSpecificationDsl
-class PluralContributionBuilder<T : Any> @PublishedApi internal constructor(
+public class PluralContributionBuilder<T : Any> @PublishedApi internal constructor(
     @PublishedApi internal val point: ExtensionPoint.Plural<T>,
 ) {
     @PublishedApi
-    internal val contributions = mutableListOf<PluginSpecification.ExtensionContributionDeclaration<T>>()
+    internal val contributions: MutableList<ExtensionContributionDeclaration<T>> = mutableListOf()
 
     /**
      * Add a singleton of type [S] to the set of contributions for the extension point.
@@ -19,8 +20,8 @@ class PluralContributionBuilder<T : Any> @PublishedApi internal constructor(
      */
     @Suppress("UNCHECKED_CAST")
     @JvmName("contributionGeneric")
-    inline fun <reified S : T> contribution() {
-        contributions += PluginSpecification.ExtensionContributionDeclaration(
+    public inline fun <reified S : T> contribution() {
+        contributions += ExtensionContributionDeclaration(
             point = point,
             type = point.type,
             creator = null
@@ -33,8 +34,8 @@ class PluralContributionBuilder<T : Any> @PublishedApi internal constructor(
      * The type [T] will be auto-constructed using Kodein.
      */
     @Suppress("UNCHECKED_CAST")
-    fun contribution() {
-        contributions += PluginSpecification.ExtensionContributionDeclaration(
+    public fun contribution() {
+        contributions += ExtensionContributionDeclaration(
             point = point,
             type = point.type,
             creator = null
@@ -46,10 +47,10 @@ class PluralContributionBuilder<T : Any> @PublishedApi internal constructor(
      *
      * @param creator The function to create the instance of [T].
      */
-    fun contribution(
+    public fun contribution(
         creator: NoArgBindingDI<Any>.() -> T,
     ) {
-        contributions += PluginSpecification.ExtensionContributionDeclaration(
+        contributions += ExtensionContributionDeclaration(
             point = point,
             type = point.type,
             creator = creator

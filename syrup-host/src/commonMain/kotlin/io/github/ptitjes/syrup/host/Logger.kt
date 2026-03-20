@@ -1,14 +1,14 @@
 package io.github.ptitjes.syrup.host
 
-interface Logger {
-    fun trace(messageBuilder: () -> String)
-    fun debug(messageBuilder: () -> String)
-    fun info(messageBuilder: () -> String)
-    fun warn(messageBuilder: () -> String)
-    fun error(messageBuilder: () -> String)
-    fun error(throwable: Throwable, messageBuilder: () -> String)
+public interface Logger {
+    public fun trace(messageBuilder: () -> String)
+    public fun debug(messageBuilder: () -> String)
+    public fun info(messageBuilder: () -> String)
+    public fun warn(messageBuilder: () -> String)
+    public fun error(messageBuilder: () -> String)
+    public fun error(throwable: Throwable, messageBuilder: () -> String)
 
-    enum class Level(internal val level: Int) {
+    public enum class Level(internal val level: Int) {
         None(0),
         Error(1),
         Warn(2),
@@ -17,8 +17,8 @@ interface Logger {
         Trace(5),
     }
 
-    companion object {
-        fun consoleLogger(
+    public companion object {
+        public fun consoleLogger(
             minimumLevel: Level = Level.Info,
             tag: String = "Syrup",
         ): Logger = object : Logger {

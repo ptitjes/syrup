@@ -6,7 +6,7 @@ import io.github.ptitjes.syrup.host.internal.DefaultPluginManager
 import io.github.ptitjes.syrup.host.internal.NoopLogger
 import org.kodein.di.DI
 
-fun assemblePlugins(
+public fun assemblePlugins(
     logger: Logger = NoopLogger,
     block: PluginAssembly.() -> Unit = { loadPlugins() }
 ): PluginManager {
@@ -23,10 +23,9 @@ fun assemblePlugins(
     )
 }
 
-interface PluginAssembly {
-    val plugins: Set<Plugin>
-    fun loadPlugins()
-    fun filterPlugins(predicate: (Plugin) -> Boolean)
-
-    fun contributePluginBindings(builder: DI.Builder.(Plugin) -> Unit)
+public interface PluginAssembly {
+    public val plugins: Set<Plugin>
+    public fun loadPlugins()
+    public fun filterPlugins(predicate: (Plugin) -> Boolean)
+    public fun contributePluginBindings(builder: DI.Builder.(Plugin) -> Unit)
 }

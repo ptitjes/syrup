@@ -10,15 +10,15 @@ import org.kodein.type.TypeToken
  * - [Singular]: Exactly one contribution is expected (or optional).
  * - [Plural]: A set of contributions is expected (or optional).
  */
-abstract class ExtensionPoint<T : Any> private constructor() {
-    abstract val type: TypeToken<T>
+public abstract class ExtensionPoint<T : Any> private constructor() {
+    public abstract val type: TypeToken<T>
 
     /**
      * An extension point that expects exactly one contribution.
      *
      * @param T The type of the contribution.
      */
-    open class Singular<T : Any>(override val type: TypeToken<T>) : ExtensionPoint<T>() {
+    public open class Singular<T : Any>(override val type: TypeToken<T>) : ExtensionPoint<T>() {
         override fun toString(): String = "ExtensionPoint.Singular(type=$type)"
     }
 
@@ -27,7 +27,7 @@ abstract class ExtensionPoint<T : Any> private constructor() {
      *
      * @param T The type of the contributions.
      */
-    open class Plural<T : Any>(override val type: TypeToken<T>) : ExtensionPoint<T>() {
+    public open class Plural<T : Any>(override val type: TypeToken<T>) : ExtensionPoint<T>() {
         override fun toString(): String = "ExtensionPoint.Plural(type=$type)"
     }
 }

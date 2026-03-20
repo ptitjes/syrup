@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
+
 plugins {
     id("syrup.conventions.kotlin-multiplatform")
     id("syrup.conventions.publishing")
@@ -5,6 +7,13 @@ plugins {
 }
 
 kotlin {
+    explicitApi()
+
+    @OptIn(ExperimentalAbiValidation::class)
+    abiValidation {
+        enabled = true
+    }
+
     jvm()
 
     sourceSets {

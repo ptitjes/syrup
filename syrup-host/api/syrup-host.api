@@ -1,0 +1,48 @@
+public abstract interface class io/github/ptitjes/syrup/host/Logger {
+	public static final field Companion Lio/github/ptitjes/syrup/host/Logger$Companion;
+	public abstract fun debug (Lkotlin/jvm/functions/Function0;)V
+	public abstract fun error (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+	public abstract fun error (Lkotlin/jvm/functions/Function0;)V
+	public abstract fun info (Lkotlin/jvm/functions/Function0;)V
+	public abstract fun trace (Lkotlin/jvm/functions/Function0;)V
+	public abstract fun warn (Lkotlin/jvm/functions/Function0;)V
+}
+
+public final class io/github/ptitjes/syrup/host/Logger$Companion {
+	public final fun consoleLogger (Lio/github/ptitjes/syrup/host/Logger$Level;Ljava/lang/String;)Lio/github/ptitjes/syrup/host/Logger;
+	public static synthetic fun consoleLogger$default (Lio/github/ptitjes/syrup/host/Logger$Companion;Lio/github/ptitjes/syrup/host/Logger$Level;Ljava/lang/String;ILjava/lang/Object;)Lio/github/ptitjes/syrup/host/Logger;
+}
+
+public final class io/github/ptitjes/syrup/host/Logger$Level : java/lang/Enum {
+	public static final field Debug Lio/github/ptitjes/syrup/host/Logger$Level;
+	public static final field Error Lio/github/ptitjes/syrup/host/Logger$Level;
+	public static final field Info Lio/github/ptitjes/syrup/host/Logger$Level;
+	public static final field None Lio/github/ptitjes/syrup/host/Logger$Level;
+	public static final field Trace Lio/github/ptitjes/syrup/host/Logger$Level;
+	public static final field Warn Lio/github/ptitjes/syrup/host/Logger$Level;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/github/ptitjes/syrup/host/Logger$Level;
+	public static fun values ()[Lio/github/ptitjes/syrup/host/Logger$Level;
+}
+
+public abstract interface class io/github/ptitjes/syrup/host/PluginAssembly {
+	public abstract fun contributePluginBindings (Lkotlin/jvm/functions/Function2;)V
+	public abstract fun filterPlugins (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun getPlugins ()Ljava/util/Set;
+	public abstract fun loadPlugins ()V
+}
+
+public final class io/github/ptitjes/syrup/host/PluginAssemblyKt {
+	public static final fun assemblePlugins (Lio/github/ptitjes/syrup/host/Logger;Lkotlin/jvm/functions/Function1;)Lio/github/ptitjes/syrup/host/PluginManager;
+	public static synthetic fun assemblePlugins$default (Lio/github/ptitjes/syrup/host/Logger;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/github/ptitjes/syrup/host/PluginManager;
+}
+
+public final class io/github/ptitjes/syrup/host/PluginException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public abstract interface class io/github/ptitjes/syrup/host/PluginManager {
+	public abstract fun getMainDi ()Lorg/kodein/di/DI;
+}
+

@@ -5,11 +5,12 @@ import io.github.ptitjes.syrup.specification.PluginSpecificationBuilder
 import org.kodein.di.DI
 
 @Service
-interface Plugin {
-    val id: PluginId get() = PluginId(this::class.simpleName!!)
+public interface Plugin {
+    public val id: PluginId get() = PluginId(this::class.simpleName!!)
 
-    val dependencies: Set<Plugin> get() = emptySet()
+    public val dependencies: Set<Plugin> get() = emptySet()
 
-    fun PluginSpecificationBuilder.specification() {}
-    fun DI.Builder.implementation() {}
+    public fun PluginSpecificationBuilder.specification() {}
+
+    public fun DI.Builder.implementation() {}
 }

@@ -1,6 +1,6 @@
 package io.github.ptitjes.syrup
 
 @JvmInline
-value class PluginId(val value: String) {
+public value class PluginId(public val value: String) {
     override fun toString(): String = value
 }
