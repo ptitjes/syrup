@@ -7,10 +7,18 @@ class StandaloneService(
     context: PluginContext,
 ) {
     private val services by context.contributions(ExtensionPoints.Services)
+    private val sourcedServices by context.sourcedContributions(ExtensionPoints.Services)
 
     fun indentifyAll() {
         println("StandaloneService initialized with ${services.size} services")
         services.forEach { it.indentify() }
+
+        println()
+        println("With sources:")
+        sourcedServices.forEach {
+            println("Source: ${it.source}")
+            it.contribution.indentify()
+        }
     }
 }
 

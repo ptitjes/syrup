@@ -107,7 +107,7 @@ internal class PluginValidator(
 
     private fun validateNoConflictingSingularContributions() {}
 
-    private fun findExtensionPointOwner(point: ExtensionPoint): Plugin? {
+    private fun findExtensionPointOwner(point: ExtensionPoint<*>): Plugin? {
         return plugins.find { plugin ->
             specifications.getValue(plugin).extensionPoints.any { it.point === point }
         }
@@ -124,7 +124,7 @@ internal class PluginValidator(
         return plugin.dependencies.any { check(it) }
     }
 
-    private fun countContributions(point: ExtensionPoint): Int {
+    private fun countContributions(point: ExtensionPoint<*>): Int {
         return plugins.sumOf { plugin ->
             specifications.getValue(plugin).extensionContributions.count { it.point === point }
         }

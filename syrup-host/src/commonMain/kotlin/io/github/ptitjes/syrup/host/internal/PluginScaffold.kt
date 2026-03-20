@@ -2,6 +2,7 @@ package io.github.ptitjes.syrup.host.internal
 
 import io.github.ptitjes.syrup.Plugin
 import io.github.ptitjes.syrup.PluginContext
+import io.github.ptitjes.syrup.Sourced
 import io.github.ptitjes.syrup.host.Logger
 import io.github.ptitjes.syrup.specification.ExtensionPoint
 import io.github.ptitjes.syrup.specification.PluginSpecification
@@ -26,18 +27,39 @@ internal class PluginScaffold(
     private val internalModule = DI.Module(name = "${plugin.id}#internal") { internalBindings() }
 
     private val context: PluginContext = object : PluginContext {
-        override fun <T : Any> contribution(extensionPoint: ExtensionPoint.Singular<T>): LazyDelegate<T> {
-            return contributionsDI.Instance(extensionPoint.type, tag = extensionPoint)
+        override fun <T : Any> contribution(extensionPoint: ExtensionPoint.Singular<T>): LazyDelegate<T> =
+            sourcedContribution(extensionPoint).map { sourced -> sourced.contribution }
+
+        override fun <T : Any> contributionOrNull(extensionPoint: ExtensionPoint.Singular<T>): LazyDelegate<T?> =
+            sourcedContributionOrNull(extensionPoint).map { sourced -> sourced?.contribution }
+
+        override fun <T : Any> contributions(extensionPoint: ExtensionPoint.Plural<T>): LazyDelegate<Set<T>> =
+            sourcedContributions(extensionPoint).map { sourced -> sourced.map { it.contribution }.toSet() }
+
+        override fun <T : Any> sourcedContribution(
+            extensionPoint: ExtensionPoint.Singular<T>,
+        ): LazyDelegate<Sourced<T>> {
+            val contributionType = extensionPoint.type
+            val sourcedType = sourcedContributionTypeOf(contributionType)
+            return contributionsDI.Instance(tag = extensionPoint, type = sourcedType)
         }
 
-        override fun <T : Any> contributionOrNull(extensionPoint: ExtensionPoint.Singular<T>): LazyDelegate<T?> {
-            return contributionsDI.InstanceOrNull(extensionPoint.type, tag = extensionPoint)
+        override fun <T : Any> sourcedContributionOrNull(
+            extensionPoint: ExtensionPoint.Singular<T>,
+        ): LazyDelegate<Sourced<T>?> {
+            val contributionType = extensionPoint.type
+            val sourcedType = sourcedContributionTypeOf(contributionType)
+            return contributionsDI.InstanceOrNull(tag = extensionPoint, type = sourcedType)
         }
 
-        override fun <T : Any> contributions(extensionPoint: ExtensionPoint.Plural<T>): LazyDelegate<Set<T>> {
+        override fun <T : Any> sourcedContributions(
+            extensionPoint: ExtensionPoint.Plural<T>,
+        ): LazyDelegate<Set<Sourced<T>>> {
+            val contributionType = extensionPoint.type
+            val sourcedType = sourcedContributionTypeOf(contributionType)
             @Suppress("UNCHECKED_CAST")
-            val type = erasedComp(Set::class, extensionPoint.type) as TypeToken<Set<T>>
-            return contributionsDI.Instance(type, tag = extensionPoint)
+            val type = erasedComp(Set::class, sourcedType) as TypeToken<Set<Sourced<T>>>
+            return contributionsDI.Instance(tag = extensionPoint, type = type)
         }
     }
 
@@ -73,7 +95,7 @@ internal class PluginScaffold(
         debugName = "${plugin.id}#contributions",
         sourceDi = DI {
             extensionPointBindingsFor(specification)
-            contributionBindingsFor(specification)
+            contributionBindingsFor(specification, source = plugin)
         },
         callbackDi = internalDi,
         bindingSourceProvider = { bindingSource ?: NoopBindingSource },
@@ -82,7 +104,7 @@ internal class PluginScaffold(
 
     private val contributedExtensionPoints = specification.contributedExtensionPoints
     val contributions = contributionsDI.asSource()
-        .filter { key -> key.tag is ExtensionPoint && key.tag in contributedExtensionPoints }
+        .filter { key -> key.tag is ExtensionPoint<*> && key.tag in contributedExtensionPoints }
 
     /**
      * Wire the scaffold with the incoming exposed types and contributions.
@@ -92,7 +114,6 @@ internal class PluginScaffold(
      */
     internal fun wire(dependencies: Iterable<PluginScaffold>, dependents: Iterable<PluginScaffold>) {
         bindingSource = buildList {
-//            add(exposedTypes)
             dependencies.forEach { dependency ->
                 add(dependency.exposedTypes)
             }
@@ -101,17 +122,17 @@ internal class PluginScaffold(
             dependents.forEach { dependent ->
                 add(
                     dependent.contributions
-                        .filter { key -> key.tag is ExtensionPoint && key.tag in ownedExtensionPoints }
+                        .filter { key -> key.tag is ExtensionPoint<*> && key.tag in ownedExtensionPoints }
                 )
             }
         }.flattenBindingSources()
     }
 }
 
-private val PluginSpecification.ownedExtensionPoints: List<ExtensionPoint>
+private val PluginSpecification.ownedExtensionPoints: List<ExtensionPoint<*>>
     get() = extensionPoints.map { it.point }
 
-private val PluginSpecification.contributedExtensionPoints: List<ExtensionPoint>
+private val PluginSpecification.contributedExtensionPoints: List<ExtensionPoint<*>>
     get() = extensionContributions.map { it.point }
 
 private val PluginSpecification.exposedTypeTokens: List<TypeToken<out Any>>

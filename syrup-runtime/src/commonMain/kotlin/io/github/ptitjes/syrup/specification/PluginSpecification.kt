@@ -60,7 +60,7 @@ class PluginSpecification private constructor(
      * @property optional Whether the extension point is optional.
      */
     class ExtensionPointDeclaration<T : Any> @PublishedApi internal constructor(
-        val point: ExtensionPoint,
+        val point: ExtensionPoint<T>,
         val optional: Boolean,
     ) {
         override fun toString(): String = "ExtensionPoint(point=$point, optional=$optional)"
@@ -75,8 +75,8 @@ class PluginSpecification private constructor(
      * @property creator An optional creator function for the contribution.
      */
     class ExtensionContributionDeclaration<T : Any> @PublishedApi internal constructor(
-        val point: ExtensionPoint,
-        val type: TypeToken<out T>?,
+        val point: ExtensionPoint<T>,
+        val type: TypeToken<T>,
         val creator: (NoArgBindingDI<Any>.() -> T)?,
     ) {
         override fun toString(): String = "Contribution(point=$point)"

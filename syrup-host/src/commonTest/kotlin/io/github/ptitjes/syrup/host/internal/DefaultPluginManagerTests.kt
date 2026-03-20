@@ -1,6 +1,7 @@
 package io.github.ptitjes.syrup.host.internal
 
 import io.github.ptitjes.syrup.PluginContext
+import io.github.ptitjes.syrup.Sourced
 import io.github.ptitjes.syrup.host.SomeService
 import io.github.ptitjes.syrup.host.SomeServiceFoo
 import io.github.ptitjes.syrup.specification.ExtensionPoint
@@ -149,8 +150,12 @@ internal class DefaultPluginManagerTests : AbstractPluginManagerTests() {
             plugins = setOf(pluginA),
         ) {
             val pluginContext = internalDiFor(pluginA).direct.instance<PluginContext>()
+
             val service by pluginContext.contribution(myExtensionPoint)
             assertEquals(SomeServiceFoo("from-pluginA"), service)
+
+            val sourcedService by pluginContext.sourcedContribution(myExtensionPoint)
+            assertEquals(Sourced<SomeService>(pluginA, SomeServiceFoo("from-pluginA")), sourcedService)
         }
     }
 
@@ -214,6 +219,9 @@ internal class DefaultPluginManagerTests : AbstractPluginManagerTests() {
             val pluginContext = internalDiFor(pluginA).direct.instance<PluginContext>()
             val service by pluginContext.contributionOrNull(myExtensionPoint)
             assertEquals(null, service)
+
+            val sourcedService by pluginContext.sourcedContributionOrNull(myExtensionPoint)
+            assertEquals(null, sourcedService)
         }
     }
 
@@ -258,6 +266,9 @@ internal class DefaultPluginManagerTests : AbstractPluginManagerTests() {
             val pluginContext = internalDiFor(pluginA).direct.instance<PluginContext>()
             val services by pluginContext.contributions(myExtensionPoint)
             assertEquals(setOf(SomeServiceFoo("from-pluginA")), services)
+
+            val sourcedServices by pluginContext.sourcedContributions(myExtensionPoint)
+            assertEquals(setOf(Sourced<SomeService>(pluginA, SomeServiceFoo("from-pluginA"))), sourcedServices)
         }
     }
 
@@ -297,6 +308,7 @@ internal class DefaultPluginManagerTests : AbstractPluginManagerTests() {
             plugins = setOf(pluginA, pluginB, pluginC),
         ) {
             val pluginContext = internalDiFor(pluginA).direct.instance<PluginContext>()
+
             val services by pluginContext.contributions(myExtensionPoint)
             assertEquals(
                 setOf(
@@ -305,6 +317,16 @@ internal class DefaultPluginManagerTests : AbstractPluginManagerTests() {
                     SomeServiceFoo("from-pluginC"),
                 ),
                 services,
+            )
+
+            val sourcedServices by pluginContext.sourcedContributions(myExtensionPoint)
+            assertEquals(
+                setOf(
+                    Sourced<SomeService>(pluginA, SomeServiceFoo("from-pluginA")),
+                    Sourced<SomeService>(pluginB, SomeServiceFoo("from-pluginB")),
+                    Sourced<SomeService>(pluginC, SomeServiceFoo("from-pluginC")),
+                ),
+                sourcedServices,
             )
         }
     }
@@ -367,8 +389,12 @@ internal class DefaultPluginManagerTests : AbstractPluginManagerTests() {
             plugins = setOf(pluginA),
         ) {
             val pluginContext = internalDiFor(pluginA).direct.instance<PluginContext>()
+
             val services by pluginContext.contributions(myExtensionPoint)
             assertEquals(setOf(), services)
+
+            val sourcedServices by pluginContext.sourcedContributions(myExtensionPoint)
+            assertEquals(setOf(), sourcedServices)
         }
     }
 
