@@ -1,5 +1,9 @@
 # Next version (unreleased)
 
+## Bug fixes
+
+- Set the JVM toolchain to the minimal required version of Kodein (i.e., 17)
+
 ## Improvements
 
 - Support retrieving sourced contributions (the contribution along with the source plugin)
