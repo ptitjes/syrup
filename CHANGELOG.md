@@ -1,5 +1,8 @@
 # Next version (unreleased)
 
+# version 0.1.1
+_2026-03-20_
+
 ## Bug fixes
 
 - Set the JVM toolchain to the minimal required version of Kodein (i.e., 17)
